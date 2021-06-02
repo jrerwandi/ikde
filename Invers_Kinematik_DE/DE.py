@@ -37,10 +37,10 @@ def DE(func, target, angle, link, n_params, lb, ub,Cr=0.5, F=0.5, NP=20, max_gen
             if trial_fitness < target_fitness:
                 target_vectors[pop] = trial_vector.copy()
                 best_fitness = trial_fitness
-                angle = d
+                angle = e
             else:
                 best_fitness = target_fitness
-                angle = e
+                angle = d
         print("Best fitness :", best_fitness)
         
     
