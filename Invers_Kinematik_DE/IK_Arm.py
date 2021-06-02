@@ -141,8 +141,10 @@ def main():
     target = [-0.24766811 * 100 ,  0.5079965 * 100 , -0.42897375 * 100]
     f_target = kdl.Frame(kdl.Rotation.RPY(0, 0, yaw), kdl.Vector(target[0], target[1], target[2]))
     
+    #jumlah yg di inisialisasi
     n_params = 4
     
+    #batas bawah dan atas 
     lb = [(-np.radians(60), -np.pi/2, 0 , -np.pi)]
     ub = [(np.pi, np.radians(45), (np.radians(160)) , np.pi)]
     
