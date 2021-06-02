@@ -2,10 +2,10 @@ import math
 import numpy as np
     
     
-def DE(func, target, angle, link, n_params,Cr=0.5, F=0.5, NP=20, max_gen=300):
+def DE(func, target, angle, link, n_params, lb, ub,Cr=0.5, F=0.5, NP=20, max_gen=300):
     
-    lb = [(-np.radians(60), -np.pi/2, 0 , -np.pi)]
-    ub = [(np.pi, np.radians(45), (np.radians(160)) , np.pi)]
+#    lb = [(-np.radians(60), -np.pi/2, 0 , -np.pi)]
+#    ub = [(np.pi, np.radians(45), (np.radians(160)) , np.pi)]
     
     target_vectors = np.random.uniform(low=lb, high=ub, size=(NP, n_params))
     

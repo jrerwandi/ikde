@@ -142,14 +142,15 @@ def main():
     f_target = kdl.Frame(kdl.Rotation.RPY(0, 0, yaw), kdl.Vector(target[0], target[1], target[2]))
     
     n_params = 4
-    lb = np.array([-np.radians(60), -np.pi/2, 0, -np.pi])
-    ub = np.array([np.pi, np.radians(30), (np.radians(160)), np.pi])
+    
+    lb = [(-np.radians(60), -np.pi/2, 0 , -np.pi)]
+    ub = [(np.pi, np.radians(45), (np.radians(160)) , np.pi)]
     
     angle = np.array([0,0,0,0])
     
     
     #inverse Kinematics
-    error, angle = DE(obj_func, f_target, angle, link, n_params)
+    error, angle = DE(obj_func, f_target, angle, link, n_params, lb, ub)
  
     if (error > 1): 
        print("IK Error")
