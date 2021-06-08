@@ -138,7 +138,7 @@ def main():
     yaw = 30
     yaw = np.radians(yaw)
  
-    target = [-0.24766811 * 100 ,  0.5079965 * 100 , -0.42897375 * 100]
+    target = [-0.24766811 * 100 ,  0.079965 * 100 , -0.42897375 * 100]
     f_target = kdl.Frame(kdl.Rotation.RPY(0, 0, yaw), kdl.Vector(target[0], target[1], target[2]))
     
     #jumlah yg di inisialisasi
@@ -146,7 +146,7 @@ def main():
     
     #batas bawah dan atas 
     lb = [(-np.radians(60), -np.pi/2, 0 , -np.pi)]
-    ub = [(np.pi, np.radians(45), (np.radians(160)) , np.pi)]
+    ub = [(np.pi, np.radians(10), (np.radians(160)) , np.pi)]
     
     angle = np.array([0,0,0,0])
     
@@ -172,10 +172,7 @@ def main():
 
     angle = np.rad2deg(angle)
     
-    angle = angle%(360)
-    for i in range (n_params):
-        if (angle[i] >= 180):
-           angle[i] = angle[i] - 360
+    angle[3] = angle[3]%(360)
             
     print("error pos", err_p)
     print("error rot", err_r)
