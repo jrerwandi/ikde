@@ -101,7 +101,7 @@ def main():
     ax.set_zlabel('Z')
 
 
-    angle = [np.radians(30.37219432), np.radians(30.00051819), np.radians(-0.6176765), np.radians(54.85312499)]
+    angle = [np.radians(120), np.radians(0), np.radians(45), np.radians(0)]
     
     
     

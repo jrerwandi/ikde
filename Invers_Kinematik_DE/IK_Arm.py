@@ -135,18 +135,18 @@ def main():
     ax.set_zlabel('Z')
 
 
-    yaw = 30
+    yaw = 20
     yaw = np.radians(yaw)
- 
-    target = [-0.24766811 * 100 ,  0.079965 * 100 , -0.42897375 * 100]
+    
+    target = [-0.50606269 * 100 ,  0.14120792 * 100 , -0.14203469 * 100]
     f_target = kdl.Frame(kdl.Rotation.RPY(0, 0, yaw), kdl.Vector(target[0], target[1], target[2]))
     
     #jumlah yg di inisialisasi
     n_params = 4
     
     #batas bawah dan atas 
-    lb = [(-np.radians(60), -np.pi/2, 0 , -np.pi)]
-    ub = [(np.pi, np.radians(10), (np.radians(160)) , np.pi)]
+    lb = np.array([(-np.radians(60), -np.radians(10), 0 , 0)])
+    ub = np.array([(np.pi, np.pi/2, (np.radians(160)) , np.pi*2)])
     
     angle = np.array([0,0,0,0])
     
@@ -196,7 +196,7 @@ def main():
     print("angle %.2f" % angle [3])
 
    
-    print("[(-60,180) , (-90, 45), (0,160), (-180, 180)")
+    print("[(-60,180) , (-10, 90), (0,160), (-180, 180)")
 #    print("batas bawah", lb)
 #    print("batas atas", ub)
     draw_axis(ax, scale=0.05* 100 , O=p0)
