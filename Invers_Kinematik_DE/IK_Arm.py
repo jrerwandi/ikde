@@ -4,7 +4,11 @@ import PyKDL as kdl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 from DE import *
+from time import time, sleep
+from numba import jit, njit
 
+import warnings
+#warnings.filterwarnings('ignore')
 
 #meter 
 link1 = 0.17282 * 100
@@ -13,7 +17,6 @@ link3 = 0.207937 * 100
 link4 = 0.364028  * 100
     
 link = [link1, link2, link3,link4]
-
 
 
 def draw_axis(ax, scale=1.0, O=np.eye(4), style='-'):
@@ -83,7 +86,6 @@ def FK(angle, link):
     
     return base, T0_0, T1_0, T2_1, T3_2
     
-    
 def obj_func (f_target, thetas, link):
     P1, P2, P3, P4, sole = FK(thetas,link)
     f_result = kdl.Frame(kdl.Rotation(sole[0,0], sole[0,1], sole[0,2],
@@ -121,7 +123,8 @@ def cekError(f_target, sole):
     
     return error, error_list, f_result, error_pos, error_rot
 
- 
+#@njit
+#@jit(nopython=True)
 def main():
     global target, angle, link, yaw
     fig = plt.figure()
@@ -133,8 +136,7 @@ def main():
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
-
-
+    
     yaw = 20
     yaw = np.radians(yaw)
     
@@ -152,8 +154,10 @@ def main():
     
     
     #inverse Kinematics
+    start = time()
+    
     error, angle = DE(obj_func, f_target, angle, link, n_params, lb, ub)
- 
+    
     if (error > 1): 
        print("IK Error")
     else:
@@ -194,9 +198,8 @@ def main():
     print("angle %.2f" % angle [1])
     print("angle %.2f" % angle [2])
     print("angle %.2f" % angle [3])
-
-   
-    print("[(-60,180) , (-10, 90), (0,160), (-180, 180)")
+    print(f"finished after {round(time() - start,2)} seconds")
+    print("[(-60,180) , (-10, 90), (0,160), (0, 360)")
 #    print("batas bawah", lb)
 #    print("batas atas", ub)
     draw_axis(ax, scale=0.05* 100 , O=p0)

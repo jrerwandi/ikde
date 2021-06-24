@@ -1,11 +1,10 @@
 import numpy as np
-NP = 5
+import numba as nb
 
-lb = np.array([(-60, -10, 0 , -180)])
-ub = np.array([(180, 90, 160 , 180)])
-n_params = 4
+@nb.jit(nopython=True)
+def func(x):
+    y = x#x.transpose()  # or x.T
+    return y
 
-target_vectors = np.random.uniform(low=lb, high=ub, size=(NP, n_params))
-target_vectors = target_vectors * target_vectors
-b = np.clip(target_vectors,lb,ub)
-print(b)
+x = np.random.normal(size=(4,4))
+x_t = func(x)
