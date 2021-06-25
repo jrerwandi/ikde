@@ -141,15 +141,15 @@ def DE():
         for pop in range(NP):
             #mutasi
             index_choice = [i for i in range(NP) if i != pop]
-            index_choice = np.array(index_choice)
+            #index_choice = np.array(index_choice)
             a, b, c = np.random.choice(index_choice, size = 3)
             while a == b or a == c or b == c:
                 a, b, c = np.random.choice(index_choice, size =3)
             #print(index_choice)
             #mutasi    
             donor_vector = target_vectors[a] + F * (target_vectors[b]-target_vectors[c])
-            #donor_vector = np.clip(donor_vector, lb,ub)
-            #donor_vector = donor_vector.flatten()
+            donor_vector = np.clip(donor_vector, lb,ub)
+            donor_vector = donor_vector.flatten()
             #print("donor",donor_vector)
             #crossover
             cross_points = np.random.rand(n_params) < Cr            
