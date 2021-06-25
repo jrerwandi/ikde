@@ -4,7 +4,8 @@ import PyKDL as kdl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 from time import time, sleep
-from numba import njit, jit
+from numba import njit as njir
+
 
 start = time()
 #cm 
@@ -88,6 +89,12 @@ def FK(angle, link):
 
     
     return base, T0_0, T1_0, T2_1, T3_2
+
+def objective_function(thetas, link):
+    P = FK(thetas, link)
+    end_to_target = target - P[-1][:3, 3]
+    fitness = math.sqrt(end_to_target[0] ** 2 + end_to_target[1] ** 2 + end_to_target[2] ** 2 )
+    return fitness, thetas
     
 def obj_func (thetas, link):
     _,_,_,_,p = FK(thetas,link)
@@ -107,7 +114,7 @@ def obj_func (thetas, link):
     return error, thetas
 
     
-#@njit
+#@njir
 def DE(Cr=0.5, F=0.5, NP=20, max_gen=300):
     
     #jumlah yg di inisialisasi
@@ -143,7 +150,7 @@ def DE(Cr=0.5, F=0.5, NP=20, max_gen=300):
             cross_points = np.random.rand(n_params) < Cr            
             trial_vector = np.where(cross_points, donor_vector, target_vectors[pop])
             #obj_func
-            target_fitness, d = obj_func(target_vectors[pop],link)
+            target_fitness, d = obj_fun(target_vectors[pop],link)
             trial_fitness, e = obj_func(trial_vector,link)
             
             #seleksi
