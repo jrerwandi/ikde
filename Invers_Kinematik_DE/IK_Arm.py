@@ -3,7 +3,6 @@ import numpy as np
 import PyKDL as kdl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
-from DE import *
 from time import time, sleep
 
 start = time()
@@ -12,7 +11,7 @@ link1 = 17.282
 link2 = 4.9194
 link3 = 20.7937
 link4 = 36.4028
-    
+angle = []
 link = [link1, link2, link3,link4]
 
 
@@ -99,6 +98,62 @@ def obj_func (f_target, thetas, link):
     
     return error, thetas
     
+    
+def DE(target, Cr=0.5, F=0.5, NP=20, max_gen=300):
+    
+    #jumlah yg di inisialisasi
+    n_params = 4
+    
+    #batas bawah dan atas 
+    lb = np.array([(-np.radians(60), -np.radians(10), 0 , 0)])
+    ub = np.array([(np.pi, np.pi/2, (np.radians(160)) , np.pi*2)])
+
+    #inisial populasi secara random
+    target_vectors = np.random.uniform(low=lb, high=ub, size=(NP, n_params))
+    
+    donor_vector = np.zeros(n_params)
+    trial_vector = np.zeros(n_params)
+    ea = []
+    best_fitness = np.inf
+    list_best_fitness = []
+    for gen in range(max_gen):
+       # print("Generation :", gen)
+        for pop in range(NP):
+            #mutasi
+            index_choice = [i for i in range(NP) if i != pop]
+            a, b, c = np.random.choice(index_choice, 3)
+            while a == b or a == c or b == c:
+                a, b, c = np.random.choice(index_choice, 3)
+            
+            #mutasi    
+            donor_vector = target_vectors[a] + F * (target_vectors[b]-target_vectors[c])
+            donor_vector = np.clip(donor_vector, lb,ub)
+            donor_vector = donor_vector.flatten()
+            #print("donor",donor_vector)
+            #crossover
+            cross_points = np.random.rand(n_params) < Cr            
+            trial_vector = np.where(cross_points, donor_vector, target_vectors[pop])
+            #obj_func
+            target_fitness, d = obj_func(target,target_vectors[pop],link)
+            trial_fitness, e = obj_func(target,trial_vector,link)
+            
+            #seleksi
+            if trial_fitness < target_fitness:
+                target_vectors[pop] = trial_vector.copy()
+                best_fitness = trial_fitness
+                angle = e
+                #angle = angle.tolist()
+            else:
+                best_fitness = target_fitness
+                angle = d
+                #angle = angle.tolist()
+    
+    #    print("Best fitness :", best_fitness)
+        #print(angle)
+        
+    
+       
+    return best_fitness, angle
 
 def cekError(f_target, r):
     f_result = kdl.Frame(kdl.Rotation(r[0,0], r[0,1], r[0,2],
@@ -138,22 +193,9 @@ def main():
     target = [-50.606269 ,  14.120792, -14.203469]
     f_target = kdl.Frame(kdl.Rotation.RPY(0, 0, yaw), kdl.Vector(target[0], target[1], target[2]))
     
-    #jumlah yg di inisialisasi
-    n_params = 4
+    #Inverse
+    err, angle = DE(f_target)
     
-    #batas bawah dan atas 
-    lb = np.array([(-np.radians(60), -np.radians(10), 0 , 0)])
-    ub = np.array([(np.pi, np.pi/2, (np.radians(160)) , np.pi*2)])
-    
-    angle = []
-    
-    
-    #inverse Kinematics
-    
-    
-    
-    
-    err, angle = DE(obj_func, f_target, angle, link, n_params, lb, ub)
     if (err > 1): 
        print("IK Error")
     else:
@@ -177,15 +219,15 @@ def main():
     angle[3] = angle[3]%(360)
             
  
-    draw_axis(ax, scale=0.05* 100 , O=p0)
+    draw_axis(ax, scale= 5, O=p0)
     draw_links(ax, origin_frame=p0, target_frame=base)
-    draw_axis(ax, scale=0.05* 100 , O=base)
+    draw_axis(ax, scale=5 , O=base)
     draw_links(ax, origin_frame=base, target_frame=p1)
-    draw_axis(ax, scale=0.05* 100, O=p1)
+    draw_axis(ax, scale=5, O=p1)
     draw_links(ax, origin_frame=p1, target_frame=p2)
-    draw_axis(ax, scale=0.05* 100, O=p2)
+    draw_axis(ax, scale=5, O=p2)
     draw_links(ax, origin_frame=p2, target_frame=p3)
-    draw_axis(ax, scale=0.05* 100, O=p3)
+    draw_axis(ax, scale=5, O=p3)
     ax.scatter3D(target[0], target[1], target[2], color = "black", marker = "x")
  
     print("error pos", err_p)
