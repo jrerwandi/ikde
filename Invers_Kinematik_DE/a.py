@@ -1,10 +1,20 @@
-import numpy as np
 import numba as nb
+from time import time, sleep
 
-@nb.jit(nopython=True)
-def func(x):
-    y = x#x.transpose()  # or x.T
-    return y
+#@nb.njit
+def a():
+    for x in range(300):
+        t = 1 + 1
+     #   print(t)
+    
+        for g in range(1000):
+            u = 1 + 2
+      #      print(u)
+    
+    return t
 
-x = np.random.normal(size=(4,4))
-x_t = func(x)
+
+start = time()   
+a()
+print(f"finished after {round(time() - start,2)} seconds")
+

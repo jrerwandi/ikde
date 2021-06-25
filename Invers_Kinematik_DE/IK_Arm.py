@@ -7,6 +7,8 @@ from DE import *
 from time import time, sleep
 from numba import jit, njit
 
+
+
 import warnings
 #warnings.filterwarnings('ignore')
 
@@ -156,12 +158,14 @@ def main():
     #inverse Kinematics
     start = time()
     
-    error, angle = DE(obj_func, f_target, angle, link, n_params, lb, ub)
     
-    if (error > 1): 
+    
+    err, angle = DE(obj_func, f_target, angle, link, n_params, lb, ub)
+    if (err > 1): 
        print("IK Error")
     else:
        print("IK Solved")
+    
     
     
     #forward Kinematics
@@ -169,6 +173,7 @@ def main():
     
     err, err_list, f_r, err_p, err_r = cekError(f_target, p3)
 
+    
     [drz, dry, drx] = f_target.M.GetEulerZYX()
     [drz2, dry2, drx2] = f_r.M.GetEulerZYX()
     
