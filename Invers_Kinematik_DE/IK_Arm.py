@@ -4,6 +4,7 @@ import PyKDL as kdl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 from time import time, sleep
+from numba import njit, jit
 
 start = time()
 #cm 
@@ -12,7 +13,13 @@ link2 = 4.9194
 link3 = 20.7937
 link4 = 36.4028
 angle = []
+yaw = 20
+yaw = np.radians(yaw)
+target = [-50.606269 ,  14.120792, -14.203469]
+       
 link = [link1, link2, link3,link4]
+
+f_target = kdl.Frame(kdl.Rotation.RPY(0, 0, yaw), kdl.Vector(target[0], target[1], target[2]))
 
 
 def draw_axis(ax, scale=1.0, O=np.eye(4), style='-'):
@@ -82,8 +89,9 @@ def FK(angle, link):
     
     return base, T0_0, T1_0, T2_1, T3_2
     
-def obj_func (f_target, thetas, link):
+def obj_func (thetas, link):
     _,_,_,_,p = FK(thetas,link)
+
     f_result = kdl.Frame(kdl.Rotation(p[0,0], p[0,1], p[0,2],
                                       p[1,0], p[1,1], p[1,2],
                                       p[2,0], p[2,1], p[2,2]),
@@ -97,9 +105,10 @@ def obj_func (f_target, thetas, link):
     error = np.sqrt(dx**2 + dy**2 + dz**2 + drz**2) #pilih yaw aja
     
     return error, thetas
+
     
-    
-def DE(target, Cr=0.5, F=0.5, NP=20, max_gen=300):
+#@njit
+def DE(Cr=0.5, F=0.5, NP=20, max_gen=300):
     
     #jumlah yg di inisialisasi
     n_params = 4
@@ -134,8 +143,8 @@ def DE(target, Cr=0.5, F=0.5, NP=20, max_gen=300):
             cross_points = np.random.rand(n_params) < Cr            
             trial_vector = np.where(cross_points, donor_vector, target_vectors[pop])
             #obj_func
-            target_fitness, d = obj_func(target,target_vectors[pop],link)
-            trial_fitness, e = obj_func(target,trial_vector,link)
+            target_fitness, d = obj_func(target_vectors[pop],link)
+            trial_fitness, e = obj_func(trial_vector,link)
             
             #seleksi
             if trial_fitness < target_fitness:
@@ -155,7 +164,7 @@ def DE(target, Cr=0.5, F=0.5, NP=20, max_gen=300):
        
     return best_fitness, angle
 
-def cekError(f_target, r):
+def cekError(r):
     f_result = kdl.Frame(kdl.Rotation(r[0,0], r[0,1], r[0,2],
                                       r[1,0], r[1,1], r[1,2],
                                       r[2,0], r[2,1], r[2,2]),
@@ -176,7 +185,7 @@ def cekError(f_target, r):
     return error, error_list, f_result, error_pos, error_rot
 
 def main():
-    global target, angle, link, yaw
+#    global target, angle, link, yaw
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     fig.suptitle("Differential Evolution - Inverse Kinematics", fontsize=12)
@@ -187,14 +196,10 @@ def main():
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
     
-    yaw = 20
-    yaw = np.radians(yaw)
     
-    target = [-50.606269 ,  14.120792, -14.203469]
-    f_target = kdl.Frame(kdl.Rotation.RPY(0, 0, yaw), kdl.Vector(target[0], target[1], target[2]))
     
     #Inverse
-    err, angle = DE(f_target)
+    err, angle = DE()
     
     if (err > 1): 
        print("IK Error")
@@ -206,7 +211,7 @@ def main():
     #forward Kinematics
     p0, base, p1, p2, p3 = FK(angle,link)
     
-    err, err_list, f_r, err_p, err_r = cekError(f_target, p3)
+    err, err_list, f_r, err_p, err_r = cekError(p3)
 
     
     [drz, dry, drx] = f_target.M.GetEulerZYX()
