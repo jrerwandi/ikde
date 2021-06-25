@@ -46,4 +46,3 @@ def DE(func, target, angle, link, n_params, lb, ub,Cr=0.9, F=0.9, NP=10, max_gen
     
        
     return best_fitness, angle
-
