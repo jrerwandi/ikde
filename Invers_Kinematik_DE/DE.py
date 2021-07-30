@@ -35,9 +35,9 @@ def DE(func, target, angle, link, n_params, lb, ub,Cr=0.5, F=0.5, NP=10, max_gen
             
             #seleksi
             if trial_fitness < target_fitness:
+                angle = e
                 target_vectors[pop] = trial_vector.copy()
                 best_fitness = trial_fitness
-                angle = e
                 #angle = angle.tolist()
             else:
                 best_fitness = target_fitness

@@ -154,10 +154,13 @@ def run():
     
     
     err, angle = DE(obj_func, f_target, angle, link, n_params, lb, ub)
-    if (err > 1): 
-       print("IK Error")
-    else:
-       print("IK Solved")
+    
+    
+    
+#    if (err > 1): 
+#       print("IK Error")
+#    else:
+#       print("IK Solved")
     
     
     
@@ -165,7 +168,11 @@ def run():
     p0, base, p1, p2, p3 = FK(angle,link)
     
     Cerror, err_list, f_r, err_p, err_r = cekError(f_target, p3)
-
+    while err_r > 0.1 or err_p > 1:
+       err, angle = DE(obj_func, f_target, angle, link, n_params, lb, ub)
+       p0, base, p1, p2, p3 = FK(angle,link)
+       Cerror, err_list, f_r, err_p, err_r = cekError(f_target, p3)
+    
     
     [drz, dry, drx] = f_target.M.GetEulerZYX()
     [drz2, dry2, drx2] = f_r.M.GetEulerZYX()
@@ -199,11 +206,6 @@ def run():
     print("angle", angle)
     print(f"finished after {round(time() - start,2)} seconds")
 
-    #plt.show()
+    plt.show()
     
-    return err
-    
-a = run()
-while a >= 1:
-   a = run()
-plt.show()
+run()
