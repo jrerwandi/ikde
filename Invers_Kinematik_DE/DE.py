@@ -2,7 +2,7 @@ import math
 import numpy as np
     
     
-def DE(func, target, angle, link, n_params, lb, ub,Cr=0.5, F=0.5, NP=20, max_gen=300):
+def DE(func, target, angle, link, n_params, lb, ub,Cr=0.5, F=0.5, NP=10, max_gen=100):
     
     #inisial populasi secara random
     target_vectors = np.random.uniform(low=lb, high=ub, size=(NP, n_params))
