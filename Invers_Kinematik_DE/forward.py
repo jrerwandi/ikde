@@ -1,17 +1,23 @@
 import math
 import numpy as np
-#import PyKDL as kdl
+import PyKDL as kdl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 
 
 #meter 
+'''
 link1 = 0.17282 
 link2 = 0.049194  
 link3 = 0.207937
 link4 = 0.364028  
-    
-link = [link1, link2, link3,link4]
+'''
+link1 = 17.7209
+link2 = 4.9194
+link3 = 23.46245+ 1.592805723
+link4 = 30.68395+ 1.592805723
+ 
+link = [link1/100, link2/100, link3/100,link4/100]
 
 yaw = 45
 yaw = np.radians(yaw)
@@ -101,7 +107,7 @@ def main():
     ax.set_zlabel('Z')
 
 
-    angle = [np.radians(30), np.radians(0), np.radians(0), np.radians(0)]
+    angle = [-1.40792264, -0.06955575, -1.21595217, -np.radians(0)]
     
     
     
@@ -110,11 +116,15 @@ def main():
     
   
     p0, base, p1, p2, p3 = FK(angle,link)
-    
+    f_result = kdl.Frame(kdl.Rotation(p3[0,0], p3[0,1], p3[0,2],
+                                      p3[1,0], p3[1,1], p3[1,2],
+                                      p3[2,0], p3[2,1], p3[2,2]),
+                         kdl.Vector(p3[0,3], p3[1,3], p3[2,3]))
+    [drz, dry, drx] = f_result.M.GetEulerZYX()
  #   print("angle", angle)
 #    print("target", target)
     print("end effector", p3[:3,3])
-   # print(p3)
+    print("rpy", drx,dry,drz)
 #    print(p3.Inverse())
     #plot
     draw_axis(ax, scale=0.03, O=p0)

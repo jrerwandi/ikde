@@ -8,17 +8,11 @@ from time import time, sleep
 
 start = time()
 #cm 
-'''
 link1 = 17.282
 link2 = 4.9194
 link3 = 20.7937
 link4 = 36.4028
-'''
-link1 = 17.7209
-link2 = 4.9194
-link3 = 23.46245+ 1.592805723
-link4 = 30.68395+ 1.592805723
-        
+    
 link = [link1, link2, link3,link4]
 
 
@@ -141,7 +135,7 @@ def run():
     yaw = 20
     yaw = np.radians(yaw)
     
-    target = [40.606269 ,  20.120792, 24]
+    target = [50.606269 ,  14.120792, 0]
     f_target = kdl.Frame(kdl.Rotation.RPY(0, 0, yaw), kdl.Vector(target[0], target[1], target[2]))
     
     #jumlah yg di inisialisasi
@@ -150,8 +144,8 @@ def run():
     #batas bawah dan atas 
     #lb = np.array([(-np.radians(60), -np.radians(10), 0 , 0)])
     #ub = np.array([(np.pi, np.pi/2, (np.radians(160)) , np.pi*2)])
-    lb = np.array([(-np.pi, -np.radians(10), -(np.radians(160)) , 0)])
-    ub = np.array([(np.radians(60), np.pi/2, 0 , np.pi*2)])
+    lb = np.array([(-np.pi, -np.pi/2, -(np.radians(160)) , -np.pi*2)])
+    ub = np.array([(np.radians(60), np.radians(10), 0 , 0)])
     
     angle = []
     
@@ -212,8 +206,8 @@ def run():
     print("error pos", err_p)
     print("error rot", err_r)
     print("""""""""""""""""")    
-    print("r p yaw target", drx, dry, drz)
-    print("r p yaw result", drx2, dry2, drz2)
+    print("yaw target", drz)
+    print("yaw result", drz2)
     print("""""""""""""""""")    
     print("target", target)
     print("end effector", p3[:3,3])
